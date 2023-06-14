@@ -38,6 +38,15 @@
         };
     };
 
+    combos {
+        compatible = "zmk,combos";
+        combo_caps {
+            timeout-ms = <50>;
+            key-positions = <37 50>;
+            bindings = <&kp CAPS>;
+        };
+    };
+
 	keymap {
 		compatible = "zmk,keymap";
 
