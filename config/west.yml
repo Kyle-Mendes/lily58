@@ -1,11 +1,11 @@
 manifest:
   remotes:
-    - name: petejohanson
-      url-base: https://github.com/petejohanson
+    - name: Kyle-Mendes
+      url-base: https://github.com/Kyle-Mendes
   projects:
     - name: zmk
-      remote: petejohanson
-      revision: power/domains-and-device-runtime
+      remote: Kyle-Mendes
+      revision: main
       import: app/west.yml
   self:
     path: config
