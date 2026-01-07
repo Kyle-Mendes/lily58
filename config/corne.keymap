@@ -21,7 +21,7 @@
 &mt {
 	tapping-term-ms = <280>;
 	quick-tap-ms = <175>;
-}
+};
 
 / {
     keymap {
