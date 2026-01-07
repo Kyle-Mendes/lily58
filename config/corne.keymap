@@ -14,8 +14,6 @@
 #include <dt-bindings/zmk/rgb.h>
 #include <dt-bindings/zmk/reset.h>
 
-#include "zmk-helpers/key-labels/36.h"
-
 &led_strip {
     chain-length = <27>;
 };
@@ -26,6 +24,11 @@
 };
 
 / {
+	  chosen {
+        zmk,physical-layout = &foostan_corne_5col_layout;
+        zmk,matrix-transform = &five_column_transform;
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
