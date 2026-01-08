@@ -20,6 +20,10 @@
     chain-length = <27>;
 };
 
+&mt {
+		tapping-term-ms = <280>;
+};
+
 / {
 	  chosen {
         zmk,physical-layout = &foostan_corne_5col_layout;
@@ -43,6 +47,12 @@
           key-positions = <16 17>;
           bindings = <&kp ESC>;
       };
+			
+			combo_caps {
+          timeout-ms = <50>;
+          key-positions = <13 16>;
+          bindings = <&kp CAPS>;
+      };
 		};
 
     keymap {
@@ -57,10 +67,10 @@
             //                    | GRAVE | TAB/GUI | LWR/SPC |   | RSE/ENT | GUI  | ALT |
 
             bindings = <
-&kp Q         &kp W        &kp E      &kp R           &kp T         &kp Y      &kp U       &kp I      &kp O        &kp P   
-&hml LCTRL A  &hml LALT S  &kp D      &mt LSHFT F     &kp G         &kp H      &mt RSHFT J &kp K      &hmr RALT L  &kp SEMI
-&kp Z         &kp X        &kp C      &kp V           &kp B         &kp N      &kp M       &kp COMMA  &kp DOT      &kp FSLH
-                           &kp GRAVE  &mt LGUI TAB    &lt 1 SPACE   &lt 2 RET  &mo RGUI    &kp BSPC
+&kp Q         &kp W        &kp E       &kp R           &kp T         &kp Y      &kp U       &kp I       &kp O       &kp P   
+&hml LCTRL A  &hml LALT S  &hml LGUI D &mt LSHFT F     &kp G         &kp H      &mt RSHFT J &hmr RGUI K &hmr RALT L &hmr RCTRL SEMI
+&kp Z         &kp X        &kp C       &kp V           &kp B         &kp N      &kp M       &kp COMMA   &kp DOT     &kp FSLH
+                           &kp GRAVE   &mt LGUI TAB    &lt 1 SPACE   &lt 2 RET  &mo RGUI    &kp BSPC
             >;
         };
 
@@ -68,14 +78,14 @@
             display-name = "LOW";
             // ----------------------------------------------------------------
             // |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  
-            // | BT1 | BT2 | BT3 | BT4 | BT5 |   | LFT | DWN |  UP | RGT |     
-            // |     |     |     |     |     |   |     |     |     |     |     
+            // | BT1 | BT2 | BT3 | BT4 | BT5 |   | LFT | DWN |  UP | RGT | VOL UP    
+            // |     |     |     |     |     |   |     |     |     |     | VOL DOWN   
             //             | GUI |     | SPC |   | ENT |     | ALT |
 
             bindings = <
 &kp N1        &kp N2        &kp N3        &kp N4        &kp N5          &kp N6    &kp N7    &kp N8    &kp N9     &kp N0
-&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT  &trans
-&trans        &trans        &trans        &trans        &trans          &trans    &trans    &trans    &trans     &trans
+&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT  &kp K_VOL_UP
+&trans        &trans        &trans        &trans        &trans          &trans    &trans    &trans    &trans     &kp K_VOL_DN
                             &kp LGUI      &trans        &kp SPACE       &kp RET   &trans    &kp RALT
             >;
         };
