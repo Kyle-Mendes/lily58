@@ -65,7 +65,7 @@
 			COMBO_FAST(kp_esc, ESC, BASE LOW RAI, 16 17);
 			COMBO_FAST(kp_bspc, BSPC, BASE LOW RAI, 17 18);
 			COMBO_FAST(kp_caps, CAPS, BASE, 13 16);
-			COMBO_FAST(kp_tab, TAB, BASE, 10 11);
+			COMBO_FAST(kp_tab, TAB, BASE, 0 1);
 
 			// Parens and brackets
       COMBO_DEFAULT(kp_lpar, LPAR, BASE LOW RAI, 22 23);
