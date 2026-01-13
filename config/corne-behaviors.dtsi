@@ -10,7 +10,7 @@
             tapping-term-ms = <230>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <LEFT_KEYS THUMBS>; // List of keys on the right side of the keyboard
+            hold-trigger-key-positions = <RIGHT_KEYS THUMBS>;
             hold-trigger-on-release;
         };
         hmr: home_row_mod_right {
@@ -21,7 +21,7 @@
             tapping-term-ms = <230>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <RIGHT_KEYS THUMBS>; // List of keys on the right side of the keyboard
+            hold-trigger-key-positions = <LEFT_KEYS THUMBS>;
             hold-trigger-on-release;
         };
     };
