@@ -24,5 +24,25 @@
             hold-trigger-key-positions = <LEFT_KEYS THUMBS>;
             hold-trigger-on-release;
         };
+        fhml: fast_home_row_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+						#binding-cells =<2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <145>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <RIGHT_KEYS THUMBS>;
+            hold-trigger-on-release;
+        };
+        fhmr: fast_home_row_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+						#binding-cells =<2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <145>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <LEFT_KEYS THUMBS>;
+            hold-trigger-on-release;
+        };
     };
 };
