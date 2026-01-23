@@ -33,7 +33,7 @@
     slow-release; \
 }
 #define COMBO_DEFAULT(N, K, L, P) COMBO(N, K, L, P, 70, 35)
-#define COMBO_FAST(N, K, L, P) COMBO(N, K, L, P, 35, 35)
+#define COMBO_FAST(N, K, L, P) COMBO(N, K, L, P, 50, 20)
 
 &led_strip {
     chain-length = <27>;
@@ -62,7 +62,8 @@
 		combos {
 			compatible = "zmk,combos";
 
-			COMBO_FAST(kp_esc, ESC, BASE LOW RAI, 16 17);
+			COMBO_FAST(kp_esc, ESC, BASE LOW RAI, 15 16);
+			COMBO_FAST(kp_spc, SPACE, BASE LOW RAI, 16 17);
 			COMBO_FAST(kp_bspc, BSPC, BASE LOW RAI, 17 18);
 			COMBO_FAST(kp_caps, CAPS, BASE, 13 16);
 			COMBO_FAST(kp_tab, TAB, BASE, 2 3);
