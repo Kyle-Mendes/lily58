@@ -3,7 +3,10 @@
  *
  * The stock status screen renders battery/output icons as LVGL symbol glyphs,
  * which come out as garbage blocks on this panel. This screen uses plain text
- * only (no symbols), plus a kaomoji that reflects the active layer.
+ * only (no symbols), plus a kaomoji face.
+ *
+ * Layer state lives on the split central, so the layer name + reactive face are
+ * central-only; the peripheral shows battery and a static face.
  */
 
 #include <string.h>
@@ -15,19 +18,28 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/display.h>
 #include <zmk/display/status_screen.h>
 #include <zmk/event_manager.h>
-
 #include <zmk/battery.h>
-#include <zmk/usb.h>
-#include <zmk/keymap.h>
 #include <zmk/events/battery_state_changed.h>
+
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+#include <zmk/usb.h>
 #include <zmk/events/usb_conn_state_changed.h>
+#endif
+
+#define HAS_LAYER (IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) || !IS_ENABLED(CONFIG_ZMK_SPLIT))
+
+#if HAS_LAYER
+#include <zmk/keymap.h>
 #include <zmk/events/layer_state_changed.h>
+#endif
 
 static lv_obj_t *battery_label;
-static lv_obj_t *layer_label;
 static lv_obj_t *face_label;
+#if HAS_LAYER
+static lv_obj_t *layer_label;
+#endif
 
-// --- Battery (text only, no charge symbol) --------------------------------
+// --- Battery (text only, no charge symbol); runs on both halves ------------
 
 struct batt_state {
     uint8_t level;
@@ -61,9 +73,11 @@ ZMK_SUBSCRIPTION(status_batt, zmk_battery_state_changed);
 ZMK_SUBSCRIPTION(status_batt, zmk_usb_conn_state_changed);
 #endif
 
-// --- Layer (name + a mood face) -------------------------------------------
+// --- Layer name + mood face; central-only ---------------------------------
 
-struct layer_state {
+#if HAS_LAYER
+
+struct layer_state_ext {
     zmk_keymap_layer_index_t index;
     const char *label;
 };
@@ -81,7 +95,7 @@ static const char *face_for_layer(zmk_keymap_layer_index_t index) {
     }
 }
 
-static void layer_update_cb(struct layer_state state) {
+static void layer_update_cb(struct layer_state_ext state) {
     if (layer_label != NULL) {
         if (state.label == NULL || strlen(state.label) == 0) {
             char text[16] = {};
@@ -96,16 +110,18 @@ static void layer_update_cb(struct layer_state state) {
     }
 }
 
-static struct layer_state layer_get_state(const zmk_event_t *eh) {
+static struct layer_state_ext layer_get_state(const zmk_event_t *eh) {
     zmk_keymap_layer_index_t index = zmk_keymap_highest_layer_active();
-    return (struct layer_state){
+    return (struct layer_state_ext){
         .index = index,
         .label = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(index)),
     };
 }
 
-ZMK_DISPLAY_WIDGET_LISTENER(status_layer, struct layer_state, layer_update_cb, layer_get_state)
+ZMK_DISPLAY_WIDGET_LISTENER(status_layer, struct layer_state_ext, layer_update_cb, layer_get_state)
 ZMK_SUBSCRIPTION(status_layer, zmk_layer_state_changed);
+
+#endif // HAS_LAYER
 
 // --- Screen assembly ------------------------------------------------------
 
@@ -118,11 +134,17 @@ lv_obj_t *zmk_display_status_screen(void) {
     face_label = lv_label_create(screen);
     lv_obj_align(face_label, LV_ALIGN_TOP_RIGHT, 0, 0);
 
+#if HAS_LAYER
     layer_label = lv_label_create(screen);
     lv_obj_align(layer_label, LV_ALIGN_BOTTOM_LEFT, 0, 0);
+#else
+    lv_label_set_text(face_label, "(o.o)");
+#endif
 
     status_batt_init();
+#if HAS_LAYER
     status_layer_init();
+#endif
 
     return screen;
 }
