@@ -28,6 +28,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define HAS_LAYER (IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) || !IS_ENABLED(CONFIG_ZMK_SPLIT))
 
+// Set to 0 to fall back to plain-text labels if the icon glyphs render as
+// garbage on this OLED. Buffers below are sized so symbols can't truncate
+// (ZMK #2444), which is the usual cause of scrambled glyphs.
+#define USE_GLYPHS 1
+
 #if HAS_LAYER
 #include <zmk/keymap.h>
 #include <zmk/events/layer_state_changed.h>
@@ -50,8 +55,13 @@ static void batt_update_cb(struct batt_state state) {
     if (battery_label == NULL) {
         return;
     }
-    char text[16] = {};
+    char text[24] = {};
+#if USE_GLYPHS
+    snprintf(text, sizeof(text), "%s %u%%",
+             state.usb_present ? LV_SYMBOL_CHARGE : LV_SYMBOL_BATTERY_FULL, state.level);
+#else
     snprintf(text, sizeof(text), "%s %u%%", state.usb_present ? "USB" : "BAT", state.level);
+#endif
     lv_label_set_text(battery_label, text);
 }
 
@@ -144,15 +154,23 @@ static void endpoint_update_cb(struct endpoint_state_ext state) {
     if (endpoint_label == NULL) {
         return;
     }
-    char text[12] = {};
+    char text[24] = {};
+    // "" connected, " x" bonded but disconnected, " o" unpaired
+    const char *conn = state.connected ? "" : (state.bonded ? " x" : " o");
     switch (state.transport) {
     case ZMK_TRANSPORT_USB:
+#if USE_GLYPHS
+        snprintf(text, sizeof(text), "%s", LV_SYMBOL_USB);
+#else
         snprintf(text, sizeof(text), "USB");
+#endif
         break;
     case ZMK_TRANSPORT_BLE:
-        // e.g. "BT1" connected, "BT1 x" bonded but disconnected, "BT1 o" unpaired
-        snprintf(text, sizeof(text), "BT%u%s", state.profile_index + 1,
-                 state.connected ? "" : (state.bonded ? " x" : " o"));
+#if USE_GLYPHS
+        snprintf(text, sizeof(text), "%s%u%s", LV_SYMBOL_BLUETOOTH, state.profile_index + 1, conn);
+#else
+        snprintf(text, sizeof(text), "BT%u%s", state.profile_index + 1, conn);
+#endif
         break;
     default:
         snprintf(text, sizeof(text), "---");
