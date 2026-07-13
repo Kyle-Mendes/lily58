@@ -123,6 +123,61 @@ ZMK_SUBSCRIPTION(status_layer, zmk_layer_state_changed);
 
 #endif // HAS_LAYER
 
+// --- Endpoint / Bluetooth profile (text only); central + BLE only ---------
+
+#if HAS_LAYER && IS_ENABLED(CONFIG_ZMK_BLE)
+#include <zmk/endpoints.h>
+#include <zmk/ble.h>
+#include <zmk/events/endpoint_changed.h>
+#include <zmk/events/ble_active_profile_changed.h>
+
+static lv_obj_t *endpoint_label;
+
+struct endpoint_state_ext {
+    enum zmk_transport transport;
+    uint8_t profile_index;
+    bool connected;
+    bool bonded;
+};
+
+static void endpoint_update_cb(struct endpoint_state_ext state) {
+    if (endpoint_label == NULL) {
+        return;
+    }
+    char text[12] = {};
+    switch (state.transport) {
+    case ZMK_TRANSPORT_USB:
+        snprintf(text, sizeof(text), "USB");
+        break;
+    case ZMK_TRANSPORT_BLE:
+        // e.g. "BT1" connected, "BT1 x" bonded but disconnected, "BT1 o" unpaired
+        snprintf(text, sizeof(text), "BT%u%s", state.profile_index + 1,
+                 state.connected ? "" : (state.bonded ? " x" : " o"));
+        break;
+    default:
+        snprintf(text, sizeof(text), "---");
+        break;
+    }
+    lv_label_set_text(endpoint_label, text);
+}
+
+static struct endpoint_state_ext endpoint_get_state(const zmk_event_t *eh) {
+    struct zmk_endpoint_instance ep = zmk_endpoint_get_selected();
+    return (struct endpoint_state_ext){
+        .transport = ep.transport,
+        .profile_index = ep.ble.profile_index,
+        .connected = zmk_ble_active_profile_is_connected(),
+        .bonded = !zmk_ble_active_profile_is_open(),
+    };
+}
+
+ZMK_DISPLAY_WIDGET_LISTENER(status_endpoint, struct endpoint_state_ext, endpoint_update_cb,
+                            endpoint_get_state)
+ZMK_SUBSCRIPTION(status_endpoint, zmk_endpoint_changed);
+ZMK_SUBSCRIPTION(status_endpoint, zmk_ble_active_profile_changed);
+
+#endif // HAS_LAYER && CONFIG_ZMK_BLE
+
 // --- Screen assembly ------------------------------------------------------
 
 lv_obj_t *zmk_display_status_screen(void) {
@@ -141,9 +196,17 @@ lv_obj_t *zmk_display_status_screen(void) {
     lv_label_set_text(face_label, "(o.o)");
 #endif
 
+#if HAS_LAYER && IS_ENABLED(CONFIG_ZMK_BLE)
+    endpoint_label = lv_label_create(screen);
+    lv_obj_align(endpoint_label, LV_ALIGN_BOTTOM_RIGHT, 0, 0);
+#endif
+
     status_batt_init();
 #if HAS_LAYER
     status_layer_init();
+#endif
+#if HAS_LAYER && IS_ENABLED(CONFIG_ZMK_BLE)
+    status_endpoint_init();
 #endif
 
     return screen;
