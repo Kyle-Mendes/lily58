@@ -1,0 +1,2 @@
+# No module-specific Kconfig symbols; the custom status screen is gated on
+# ZMK's own CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM.
