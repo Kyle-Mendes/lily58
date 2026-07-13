@@ -21,3 +21,7 @@ include:
     shield: corne_left
   - board: nice_nano//zmk
     shield: corne_right
+  # one-time use to clear stale settings after the Zephyr 4.1 migration;
+  # flash to both halves, then reflash corne_left/right. remove when done.
+  - board: nice_nano//zmk
+    shield: settings_reset

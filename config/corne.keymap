@@ -36,7 +36,7 @@
 #define COMBO_FAST(N, K, L, P) COMBO(N, K, L, P, 150, 20)
 
 &led_strip {
-    chain-length = <27>;
+    chain-length = <24>;
 };
 
 &mt {
@@ -121,7 +121,7 @@
 &kp EXCL  &kp AT  &kp HASH   &kp DLLR        &kp PRCNT    &kp CARET  &kp AMPS        &kp KP_MULTIPLY  &kp LPAR  &kp RPAR
 &trans    &trans  &trans     &trans          &trans       &kp MINUS  &kp EQUAL       &kp LBKT         &kp RBKT  &kp PIPE 
 &trans    &trans  &trans     &trans          &trans       &kp UNDER  &kp PLUS        &kp LBRC         &kp RBRC  &kp BSLH
-                  &kp LGUI   &studio_unlock  &kp SPACE    &kp RET    &studio_unlock  &kp RALT
+                  &kp LGUI   &trans          &kp SPACE    &kp RET    &trans          &kp RALT
             >;
         };
         extra_1 {
